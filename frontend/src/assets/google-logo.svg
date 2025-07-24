@@ -1,0 +1,3 @@
+import googleLogo from '../assets/google-logo.svg';
+
+<img src={googleLogo} alt="Google logo" className="w-6 h-6" />

@@ -8,9 +8,10 @@ const Header = () => {
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
-    { name: 'About', path: '/about' },
     { name: 'Providers', path: '/Providers' },
-    { name: 'Contact', path: '/Contact' }
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/Contact' },
+    
   ];
 
   return (
@@ -40,7 +41,13 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex space-x-4">
-            <button className="btn-secondary">Sign In</button>
+            <Link to="/signin">
+            <button className='btn-secondary ml-4'> 
+              Sign In
+            </button>
+            </Link>
+           
+
             <button className="btn-primary">Get Started</button>
           </div>
 
