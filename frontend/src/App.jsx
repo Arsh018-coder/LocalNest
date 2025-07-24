@@ -6,6 +6,8 @@ import WebGLBackground from './components/WebGLBackground';
 import Home from './pages/Home';
 import Services from './pages/Services';
 import About from './pages/About';
+import Providers from './pages/Providers';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -17,7 +19,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/Providers" element={<Providers />} />
             <Route path="/about" element={<About />} />
+            <Route path="/Contact" element={<Contact />} />
           </Routes>
         </main>
         <Footer />
