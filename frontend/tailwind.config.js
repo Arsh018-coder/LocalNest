@@ -9,7 +9,7 @@ module.exports = {
       colors: {
         dominant: '#f1f2ee',
         secondary: '#374650',
-        accent: '#dcf763'
+        accent: '#C7E94B'
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

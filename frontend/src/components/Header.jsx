@@ -12,7 +12,8 @@ const Header = () => {
   ];
 
   return (
-    <header className="glass-effect sticky top-0 z-50 border-b border-secondary border-opacity-20">
+    // src/components/Header.jsx
+    <header className="menu-bar-dark">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold text-secondary">

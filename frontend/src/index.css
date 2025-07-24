@@ -29,4 +29,11 @@
   .glass-effect {
     @apply bg-dominant bg-opacity-80 backdrop-blur-sm border border-secondary border-opacity-20;
   }
+  .menu-bar-dark {
+  background: rgba(94, 105, 122, 0.90);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 12px rgba(55, 70, 80, 0.08);
+}
+
+
 }
