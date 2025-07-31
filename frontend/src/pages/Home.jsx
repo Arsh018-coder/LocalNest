@@ -1,6 +1,8 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import ServiceCard from '../components/ServiceCard';
+import TestimonialsSection from '../components/TestimonialsSection';
+
 
 const Home = () => {
   const featuredServices = [
@@ -44,6 +46,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <TestimonialsSection />
     </div>
   );
 };
