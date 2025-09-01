@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -40,15 +48,34 @@ const Header = () => {
             ))}
           </nav>
 
-          <div className="hidden md:flex space-x-4">
-            <Link to="/signin">
-            <button className='btn-secondary ml-4'> 
-              Sign In
-            </button>
-            </Link>
-           
-
-            <button className="btn-primary">Get Started</button>
+          <div className="hidden md:flex space-x-4 items-center">
+            {isAuthenticated ? (
+              <>
+                <Link to="/dashboard">
+                  <button className="btn-secondary">
+                    Dashboard
+                  </button>
+                </Link>
+                <span className="text-secondary">
+                  Hi, {user.firstName}!
+                </span>
+                <button onClick={handleLogout} className="btn-primary">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/signin">
+                  <button className='btn-secondary'> 
+                    Sign In
+                  </button>
+                </Link>
+                
+                <Link to="/register">
+                  <button className="btn-primary">Get Started</button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -75,6 +102,42 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <div className="pt-4 border-t border-secondary/20 space-y-3">
+              {isAuthenticated ? (
+                <>
+                  <div className="text-secondary text-center">
+                    Hi, {user.firstName}!
+                  </div>
+                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                    <button className="w-full btn-secondary text-center">
+                      Dashboard
+                    </button>
+                  </Link>
+                  <button 
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full btn-primary text-center"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/signin" onClick={() => setIsMenuOpen(false)}>
+                    <button className="w-full btn-secondary text-center">
+                      Sign In
+                    </button>
+                  </Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                    <button className="w-full btn-primary text-center">
+                      Get Started
+                    </button>
+                  </Link>
+                </>
+              )}
+            </div>
           </nav>
         )}
       </div>

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import apiCall from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,9 +18,33 @@ export default function SignIn() {
     alert('Microsoft login clicked');
   };
 
-  const handleSubmit = e => {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Signing in with email: ${email}`);
+    setLoading(true);
+    setError('');
+
+    try {
+      const data = await apiCall('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+
+      // Use auth context to login
+      login(data.user, data.token);
+      
+      alert(`Welcome back, ${data.user.firstName}!`);
+      
+      // Redirect to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.message || 'Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,11 +82,18 @@ export default function SignIn() {
             />
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-accent text-secondary font-semibold rounded-lg py-3 hover:bg-accent/90 transition"
+            disabled={loading}
+            className="w-full bg-accent text-secondary font-semibold rounded-lg py-3 hover:bg-accent/90 transition disabled:opacity-50"
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
@@ -88,6 +124,16 @@ export default function SignIn() {
               Continue with Microsoft
             </button>
           </div>
+        </div>
+
+        {/* Register link */}
+        <div className="mt-6 text-center">
+          <p className="text-secondary">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-accent hover:underline font-semibold">
+              Sign up here
+            </Link>
+          </p>
         </div>
       </div>
     </section>

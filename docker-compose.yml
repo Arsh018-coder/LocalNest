@@ -1,0 +1,76 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: localnest-postgres
+    environment:
+      POSTGRES_USER: localnest
+      POSTGRES_PASSWORD: localnest123
+      POSTGRES_DB: localnest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/prisma/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - localnest-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: localnest-backend
+    environment:
+      DATABASE_URL: postgresql://localnest:localnest123@postgres:5432/localnest_db
+      NODE_ENV: development
+      PORT: 5002
+    ports:
+      - "5002:5002"
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - localnest-network
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: localnest-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5002
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - localnest-network
+    command: npm start
+
+  prisma-studio:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: localnest-prisma-studio
+    environment:
+      DATABASE_URL: postgresql://localnest:localnest123@postgres:5432/localnest_db
+    ports:
+      - "5555:5555"
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - localnest-network
+    command: npx prisma studio --port 5555 --hostname 0.0.0.0
+
+volumes:
+  postgres_data:
+
+networks:
+  localnest-network:
+    driver: bridge

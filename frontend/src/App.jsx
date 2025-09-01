@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import WebGLBackground from './components/WebGLBackground';
@@ -9,26 +10,32 @@ import About from './pages/About';
 import Providers from './pages/Providers';
 import Contact from './pages/Contact';
 import SignIn from './pages/SignIn';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen relative">
-        <WebGLBackground />
-        <Header />
-        <main className="relative z-10">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/Providers" element={<Providers />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/Contact" element={<Contact />} />
-            <Route path="/signin" element={<SignIn />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen relative">
+          <WebGLBackground />
+          <Header />
+          <main className="relative z-10">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/Providers" element={<Providers />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/Contact" element={<Contact />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
