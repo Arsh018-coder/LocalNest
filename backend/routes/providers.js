@@ -8,7 +8,8 @@ router.get('/', async (req, res) => {
   try {
     const providers = await prisma.provider.findMany({
       include: {
-        services: true
+        services: true,
+        user: true
       }
     });
     res.json(providers);

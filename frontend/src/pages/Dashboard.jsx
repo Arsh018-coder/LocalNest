@@ -57,30 +57,45 @@ export default function Dashboard() {
   };
 
   const handleVerificationRequest = async () => {
-    if (!profile?.provider?.id) return;
+    if (!profile?.provider?.id) {
+      console.error('No provider ID found');
+      alert('Provider information not found. Please try again.');
+      return;
+    }
     
     try {
+      console.log('Sending verification request for provider:', profile.provider.id);
+      console.log('Using token:', token ? 'Token exists' : 'No token found');
+      
       const response = await apiCall(`/api/providers/${profile.provider.id}/verify`, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
+        body: JSON.stringify({})
       });
       
-      // Update the profile to reflect verification request
-      setProfile(prev => ({
-        ...prev,
-        provider: {
-          ...prev.provider,
-          verificationRequested: true,
-          verificationRequestedAt: new Date().toISOString()
-        }
-      }));
+      console.log('Verification response:', response);
       
-      alert('Verification request submitted successfully!');
+      if (response && response.provider) {
+        // Update the profile to reflect verification request
+        setProfile(prev => ({
+          ...prev,
+          provider: {
+            ...prev.provider,
+            verificationRequested: true,
+            verificationRequestedAt: new Date().toISOString()
+          }
+        }));
+        
+        alert('Verification request submitted successfully!');
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       console.error('Verification request error:', error);
-      alert('Failed to submit verification request. Please try again.');
+      alert(`Failed to submit verification request: ${error.message}. Please try again or contact support.`);
     }
   };
 

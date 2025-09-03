@@ -6,6 +6,7 @@ const AdminServices = () => {
   const { token } = useAuth();
   const [list, setList] = useState([]);
   const [form, setForm] = useState({ name: '', description: '', category: '', averagePrice: '' });
+  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
 
   const load = async () => {
@@ -16,13 +17,47 @@ const AdminServices = () => {
   };
   useEffect(() => { load(); }, []);
 
-  const create = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await adminFetch('/api/admin/services', token, { method: 'POST', body: JSON.stringify({ ...form, averagePrice: Number(form.averagePrice) }) });
+      const serviceData = { 
+        ...form, 
+        averagePrice: Number(form.averagePrice) 
+      };
+      
+      if (editingId) {
+        await adminFetch(`/api/admin/services/${editingId}`, token, { 
+          method: 'PUT', 
+          body: JSON.stringify(serviceData) 
+        });
+      } else {
+        await adminFetch('/api/admin/services', token, { 
+          method: 'POST', 
+          body: JSON.stringify(serviceData) 
+        });
+      }
+      
       setForm({ name: '', description: '', category: '', averagePrice: '' });
+      setEditingId(null);
       await load();
-    } catch (e) { setError(e.message); }
+    } catch (e) { 
+      setError(e.message); 
+    }
+  };
+
+  const startEditing = (service) => {
+    setForm({
+      name: service.name,
+      description: service.description || '',
+      category: service.category,
+      averagePrice: service.averagePrice
+    });
+    setEditingId(service.id);
+  };
+
+  const cancelEditing = () => {
+    setForm({ name: '', description: '', category: '', averagePrice: '' });
+    setEditingId(null);
   };
 
   const remove = async (id) => {
@@ -34,12 +69,54 @@ const AdminServices = () => {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={create} className="grid grid-cols-1 md:grid-cols-5 gap-2 bg-white/70 p-3 rounded">
-        <input className="p-2 border rounded" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <input className="p-2 border rounded" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        <input className="p-2 border rounded" placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
-        <input className="p-2 border rounded" placeholder="Avg Price" value={form.averagePrice} onChange={(e) => setForm({ ...form, averagePrice: e.target.value })} />
-        <button className="px-4 py-2 bg-blue-600 text-white rounded" type="submit">Add</button>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-2 bg-white/70 p-3 rounded">
+        <input 
+          className="p-2 border rounded" 
+          placeholder="Name" 
+          value={form.name} 
+          onChange={(e) => setForm({ ...form, name: e.target.value })} 
+          required
+        />
+        <input 
+          className="p-2 border rounded" 
+          placeholder="Description" 
+          value={form.description} 
+          onChange={(e) => setForm({ ...form, description: e.target.value })} 
+        />
+        <input 
+          className="p-2 border rounded" 
+          placeholder="Category" 
+          value={form.category} 
+          onChange={(e) => setForm({ ...form, category: e.target.value })} 
+          required
+        />
+        <input 
+          className="p-2 border rounded" 
+          type="number"
+          placeholder="Avg Price" 
+          value={form.averagePrice} 
+          onChange={(e) => setForm({ ...form, averagePrice: e.target.value })}
+          min="0"
+          step="0.01"
+          required
+        />
+        <div className="flex gap-2">
+          <button 
+            className="px-4 py-2 bg-blue-600 text-white rounded flex-1" 
+            type="submit"
+          >
+            {editingId ? 'Update' : 'Add'}
+          </button>
+          {editingId && (
+            <button 
+              type="button"
+              onClick={cancelEditing}
+              className="px-4 py-2 bg-gray-500 text-white rounded"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
 
       {error && <div className="text-red-600">{error}</div>}
@@ -49,8 +126,22 @@ const AdminServices = () => {
             <div>
               <div className="font-medium">{s.name}</div>
               <div className="text-sm text-gray-600">{s.category} • ${s.averagePrice}</div>
+              {s.description && <div className="text-xs text-gray-500 mt-1">{s.description}</div>}
             </div>
-            <button className="px-3 py-1 bg-red-600 text-white rounded" onClick={() => remove(s.id)}>Delete</button>
+            <div className="flex gap-2">
+              <button 
+                className="px-3 py-1 bg-blue-600 text-white rounded" 
+                onClick={() => startEditing(s)}
+              >
+                Edit
+              </button>
+              <button 
+                className="px-3 py-1 bg-red-600 text-white rounded" 
+                onClick={() => remove(s.id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
         {list.length === 0 && <div className="p-4 text-sm text-gray-600">No services.</div>}

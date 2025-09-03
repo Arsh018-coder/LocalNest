@@ -25,6 +25,7 @@ router.get('/users', authenticateAdmin, userController.getUsers);
 router.get('/users/:id', authenticateAdmin, userController.getUserById);
 router.put('/users/:id', authenticateAdmin, userController.updateUser);
 router.put('/users/:id/status', authenticateAdmin, userController.updateUserStatus);
+router.delete('/users/:id', authenticateAdmin, userController.deleteUser);
 
 // Provider verification routes
 router.get('/providers/pending-verifications', authenticateAdmin, providerController.getPendingVerifications);
