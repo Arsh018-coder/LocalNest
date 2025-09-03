@@ -105,11 +105,30 @@ async function main() {
     },
   });
 
+  // Create the admin account
+  const adminUser = await prisma.user.create({
+    data: {
+      firstName: 'LocalNest',
+      lastName: '',
+      email: 'localnest88@gmail.com',
+      password: await bcrypt.hash('admin123!', 12), // Strong default password
+      phone: '+1234567893',
+      userType: 'ADMIN',
+    },
+  });
+
+  const admin = await prisma.admin.create({
+    data: {
+      userId: adminUser.id,
+    },
+  });
+
   console.log('Database seeded successfully!');
   console.log('Sample login credentials:');
   console.log('Provider: sarah@example.com / password123');
   console.log('Provider: mike@example.com / password123');
   console.log('Customer: john@example.com / password123');
+  console.log('Admin: localnest88@gmail.com / admin123!');
 }
 
 main()

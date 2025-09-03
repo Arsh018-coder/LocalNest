@@ -14,8 +14,8 @@ function Services() {
           <p className="text-gray-600">Expert plumbing repairs and maintenance.</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold mb-4">Electrical</h3>
-          <p className="text-gray-600">Safe and reliable electrical services.</p>
+          <h3 className="text-xl font-semibold mb-4">Tutoring</h3>
+          <p className="text-gray-600">Academic support for all subjects.</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-xl font-semibold mb-4">Gardening</h3>

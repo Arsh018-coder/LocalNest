@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -51,9 +51,9 @@ const Header = () => {
           <div className="hidden md:flex space-x-4 items-center">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard">
+                <Link to={isAdmin ? '/admin' : '/dashboard'}>
                   <button className="btn-secondary">
-                    Dashboard
+                    {isAdmin ? 'Admin' : 'Dashboard'}
                   </button>
                 </Link>
                 <span className="text-secondary">

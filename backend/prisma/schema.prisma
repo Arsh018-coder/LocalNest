@@ -23,22 +23,27 @@ model Service {
 }
 
 model Provider {
-  id                      Int       @id @default(autoincrement())
-  userId                  Int       @unique
-  rating                  Float     @default(0)
-  reviews                 Int       @default(0)
-  experience              String?
-  location                String?
-  hourlyRate              Float?
-  bio                     String?
-  verified                Boolean   @default(false)
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
-  verificationRequested   Boolean   @default(false)
-  verificationRequestedAt DateTime?
-  bookings                Booking[]
-  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  services                Service[] @relation("ProviderToService")
+  id                         Int       @id @default(autoincrement())
+  userId                     Int       @unique
+  rating                     Float     @default(0)
+  reviews                    Int       @default(0)
+  experience                 String?
+  location                   String?
+  hourlyRate                 Float?
+  bio                        String?
+  verified                   Boolean   @default(false)
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  verificationRequested      Boolean   @default(false)
+  verificationRequestedAt    DateTime?
+  verificationRejectedReason String?
+  verifiedBy                 Int?
+  verifiedAt                 DateTime?
+  bookings                   Booking[]
+  user                       User      @relation("ProviderUser", fields: [userId], references: [id], onDelete: Cascade)
+  services                   Service[] @relation("ProviderToService")
+  // verifiedBy stores the ID of the admin's user who verified; kept as scalar
+  
 
   @@map("providers")
 }
@@ -55,7 +60,8 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   customer  Customer?
-  provider  Provider?
+  provider  Provider? @relation("ProviderUser")
+  admin     Admin?
 
   @@map("users")
 }
@@ -90,6 +96,31 @@ model Booking {
   @@map("bookings")
 }
 
+model Admin {
+  id                Int       @id @default(autoincrement())
+  userId            Int       @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  auditLogs         AuditLog[]
+  // verifiedProviders field removed; verification references User instead
+
+  @@map("admins")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  adminId    Int
+  action     String
+  targetType String   // 'USER', 'PROVIDER', 'SERVICE', etc.
+  targetId   Int?
+  details    Json?
+  createdAt  DateTime @default(now())
+  admin      Admin    @relation(fields: [adminId], references: [id])
+
+  @@map("audit_logs")
+}
+
 enum BookingStatus {
   PENDING
   CONFIRMED
@@ -101,4 +132,5 @@ enum BookingStatus {
 enum UserType {
   CUSTOMER
   PROVIDER
+  ADMIN
 }

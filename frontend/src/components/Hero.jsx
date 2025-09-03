@@ -19,11 +19,9 @@ const Hero = () => {
           <Link to="/services" className="btn-primary text-lg px-8 py-4">
             Browse Services
           </Link>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link to="/providers" className="btn-secondary text-lg px-8 py-4">
-            Become a Provider
-            </Link>
-          </div>
+          <Link to="/providers" className="btn-secondary text-lg px-8 py-4">
+          Become a Provider
+          </Link>
         </div>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">

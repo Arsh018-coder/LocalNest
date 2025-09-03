@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isAdmin = user?.userType === 'ADMIN';
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -52,7 +53,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUser,
-    isAuthenticated: !!token && !!user
+    isAuthenticated: !!token && !!user,
+    isAdmin
   };
 
   return (

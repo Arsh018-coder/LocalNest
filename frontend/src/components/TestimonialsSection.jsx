@@ -1,5 +1,4 @@
-'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function TestimonialsSection() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
