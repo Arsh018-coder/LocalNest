@@ -93,16 +93,6 @@ npm run db:seed
 npm run db:studio
 ```
 
-## Environment Variables
-
-Create `backend/.env`:
-
-```env
-DATABASE_URL="postgresql://localnest:localnest123@localhost:5432/localnest_db"
-NODE_ENV=development
-PORT=5000
-```
-
 ## Project Structure
 
 ```
